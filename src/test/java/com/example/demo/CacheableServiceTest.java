@@ -9,6 +9,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
@@ -37,17 +38,17 @@ public class CacheableServiceTest {
     public void shouldCacheKey() {
         String key = UUID.randomUUID().toString();
 
-        String value = cacheableService.get(key);
+        Optional<String> value = cacheableService.get(key);
 
-        assertThat(value).isNotNull();
+        assertThat(value).isPresent();
         assertThat(getCachedKeys()).containsExactly("cacheable::" + key);
     }
 
     @Test
     public void shouldNotCacheUnknown() {
-        String value = cacheableService.get("unknown");
+        Optional<String> value = cacheableService.get("unknown");
 
-        assertThat(value).isNull();
+        assertThat(value).isNotPresent();
         assertThat(getCachedKeys()).hasSize(0);
     }
 
